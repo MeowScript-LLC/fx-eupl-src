@@ -7,7 +7,7 @@
  * Adapted from code originally licensed under the MIT license.
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-04-19.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-10-09.
  */
 
 'use strict';

@@ -9,7 +9,7 @@
  * Copyright (c) 2013 FastLED, MIT License (see NOTICE).
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-04-19.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-10-09.
  */
 
 import Foundation
@@ -362,6 +362,13 @@ final class WLEDEffectStrip {
 }
 
 enum WLEDEffects1D {
+
+    static func wledDateTimeText(_ date: Date = Date()) -> String {
+        let c = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second], from: date)
+        let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        let mon = months[max(0, min(11, (c.month ?? 1) - 1))]
+        return String(format: "%@ %d, %d %d:%02d:%02d", mon, c.day ?? 1, c.year ?? 1970, c.hour ?? 0, c.minute ?? 0, c.second ?? 0)
+    }
 
     static let effects: [Int: WLEDEffectFunc] = [
         0: effect_solid,

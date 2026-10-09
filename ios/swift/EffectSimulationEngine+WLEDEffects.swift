@@ -10,7 +10,7 @@
  * Copyright (c) 2013 FastLED, MIT License (see NOTICE).
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-05-05.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-10-09.
  */
 
 import SwiftUI
@@ -770,7 +770,7 @@ extension EffectSimulationEngine {
 
     private func scrollingText2D(fx: Double, fy: Double, W: Double, H: Double,
                                  time: TimeInterval, ns: Double) -> (r: Double, g: Double, b: Double) {
-        let text = displayText.isEmpty ? "" : displayText
+        let text = displayText.isEmpty ? WLEDEffects1D.wledDateTimeText() : displayText
 
         let scale = 1.0 + (custom2 / 255.0) * 2.0
         let renderCharW = Double(6) * scale

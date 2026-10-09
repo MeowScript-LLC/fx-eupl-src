@@ -7,10 +7,19 @@
  * Adapted from code originally licensed under the MIT license.
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-09-25.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-10-09.
  */
 
 package fx
+
+internal fun wledDateTimeText(c: java.util.Calendar = java.util.Calendar.getInstance()): String {
+    val months = arrayOf("Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec")
+    return String.format(
+        java.util.Locale.US, "%s %d, %d %d:%02d:%02d",
+        months[c.get(java.util.Calendar.MONTH)], c.get(java.util.Calendar.DAY_OF_MONTH), c.get(java.util.Calendar.YEAR),
+        c.get(java.util.Calendar.HOUR_OF_DAY), c.get(java.util.Calendar.MINUTE), c.get(java.util.Calendar.SECOND),
+    )
+}
 
 internal interface JsFxBatch {
     val ids: IntArray

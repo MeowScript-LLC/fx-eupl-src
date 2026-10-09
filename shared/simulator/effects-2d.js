@@ -8,7 +8,7 @@
  * FX_2Dfcn.cpp: Copyright (c) 2022 Blaz Kristan. Licensed under the EUPL v. 1.2 or later.
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-04-19.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-10-09.
  */
 
 'use strict';
@@ -1602,12 +1602,19 @@ const _scrollFont5x7 = {
   'y': [0x0C,0x50,0x50,0x50,0x3C], 'z': [0x44,0x64,0x54,0x4C,0x44],
 };
 
+function _wledDateTimeText() {
+  const d = new Date();
+  const mon = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][d.getMonth()];
+  const two = (v) => (v < 10 ? '0' : '') + v;
+  return mon + ' ' + d.getDate() + ', ' + d.getFullYear() + ' ' + d.getHours() + ':' + two(d.getMinutes()) + ':' + two(d.getSeconds());
+}
+
 Effects2D[122] = function scrollingText(seg) {
   const m = M2D();
   const cols = seg.vWidth();
   const rows = seg.vHeight();
 
-  const text = seg._scrollText || "WLED";
+  const text = seg._scrollText || _wledDateTimeText();
   const fontHeight = 7;
   const letterSpacing = 1;
   const glyphWidth = 5;

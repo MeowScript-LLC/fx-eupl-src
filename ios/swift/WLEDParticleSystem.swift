@@ -9,7 +9,7 @@
  * FXparticleSystem.cpp/.h, which is EUPL v1.2 (c) 2025 Damian Schneider.
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-04-30.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-10-09.
  */
 
 import Foundation

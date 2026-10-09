@@ -11,7 +11,7 @@
  * Copyright (c) 2013 FastLED, MIT License (see NOTICE).
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-09-25.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-10-09.
  */
 
 package fx
