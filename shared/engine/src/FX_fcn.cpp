@@ -5,7 +5,7 @@
  * Licensed under the EUPL v. 1.2 or later.
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-04-19.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-05-08.
  */
 
 /*
@@ -282,8 +282,8 @@ CRGBPalette16 &Segment::loadPalette(CRGBPalette16 &targetPalette, uint8_t pal) {
         targetPalette = fastledPalettes[pal - DYNAMIC_PALETTE_COUNT];
       } else {
         byte tcp[72];
-        memcpy_P(tcp, (byte*)pgm_read_dword(&(gGradientPalettes[pal - (DYNAMIC_PALETTE_COUNT + FASTLED_PALETTE_COUNT)])), sizeof(tcp));
-        targetPalette = CRGBPalette16(CRGB::Red, CRGB::Green, CRGB::Blue, CRGB::Yellow); // stub
+        memcpy_P(tcp, (byte*)pgm_read_dword(&(gGradientPalettes[pal - (DYNAMIC_PALETTE_COUNT + FASTLED_PALETTE_COUNT)])), 72);
+        targetPalette.loadDynamicGradientPalette(tcp);
       }
       break;
   }

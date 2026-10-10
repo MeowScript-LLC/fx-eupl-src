@@ -10,7 +10,7 @@
  * Copyright (c) 2013 FastLED, MIT License (see NOTICE).
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-04-19.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-05-05.
  */
 
 import SwiftUI
@@ -489,6 +489,9 @@ extension EffectSimulationEngine {
 
         return fb.getPixel(x: x, y: y)
     }
+
+    @inline(__always)
+    private func fract(_ x: Double) -> Double { x - floor(x) }
 
     private func sin8(_ theta: Double) -> Double {
         (sin(theta / 255.0 * 2.0 * .pi) + 1.0) / 2.0 * 255.0
@@ -1717,7 +1720,9 @@ extension EffectSimulationEngine {
             guard bestBri > 0.01 else { return Color.clear }
             return effectPrimary(n, pri).opacity(bestBri)
         }
-        if name.contains("firework 1d") || name.contains("fireworks 1d") {
+        if (name.contains("firework 1d") || name.contains("fireworks 1d"))
+            && !name.contains("ps fireworks 1d")
+            && !name.contains("psfireworks1d") {
             let ni = intensity / 255.0
             let cycleDur = 3.0 / max(0.1, ns)
             let t = fmod(time, cycleDur)
@@ -2686,7 +2691,7 @@ extension EffectSimulationEngine {
         return hsbComponents(position, saturation, brightness)
     }
 
-    private func paletteRGBAt(_ position: Double) -> (r: Double, g: Double, b: Double) {
+    func paletteRGBAt(_ position: Double) -> (r: Double, g: Double, b: Double) {
         let palette = cachedPaletteRGB
         guard !palette.isEmpty else { return (1, 1, 1) }
         guard palette.count > 1 else { return palette[0] }

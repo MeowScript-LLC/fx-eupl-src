@@ -7,7 +7,7 @@
  * Copyright (c) 2013 FastLED, MIT License (see NOTICE).
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-04-19.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-05-08.
  */
 
 #include "FastLED.h"
@@ -312,11 +312,51 @@ void fill_rainbow(CRGB* leds, int numToFill, uint8_t initialhue, uint8_t deltahu
   }
 }
 
-const CRGBPalette16 RainbowColors_p(CRGB(255,0,0), CRGB(0,255,0), CRGB(0,0,255), CRGB(255,0,0));
-const CRGBPalette16 PartyColors_p(CRGB(90,0,205), CRGB(255,100,0), CRGB(0,200,100), CRGB(200,0,100));
-const CRGBPalette16 CloudColors_p(CRGB(0,0,240), CRGB(0,80,240), CRGB(80,160,255), CRGB(255,255,255));
-const CRGBPalette16 LavaColors_p(CRGB(0,0,0), CRGB(128,0,0), CRGB(255,128,0), CRGB(255,255,0));
-const CRGBPalette16 OceanColors_p(CRGB(0,0,32), CRGB(0,32,128), CRGB(0,128,255), CRGB(128,255,255));
-const CRGBPalette16 ForestColors_p(CRGB(0,32,0), CRGB(0,128,0), CRGB(0,64,0), CRGB(32,128,32));
-const CRGBPalette16 RainbowStripeColors_p(CRGB(255,0,0), CRGB(0,0,0), CRGB(0,0,255), CRGB(0,0,0));
-const CRGBPalette16 HeatColors_p(CRGB(0,0,0), CRGB(255,0,0), CRGB(255,255,0), CRGB(255,255,255));
+// Based on WLED colors.cpp hsv2rgb_spectrum.
+void hsv2rgb_spectrum(const CHSV32& hsv, CRGBW& rgb) {
+  unsigned p, q, t;
+  unsigned region = ((unsigned)hsv.h * 6) >> 16;
+  unsigned remainder = (hsv.h - (region * 10923)) * 6;
+  if (hsv.s == 0) { rgb.r = rgb.g = rgb.b = hsv.v; rgb.w = 0; return; }
+  p = (hsv.v * (255 - hsv.s)) >> 8;
+  q = (hsv.v * (255 - ((hsv.s * remainder) >> 16))) >> 8;
+  t = (hsv.v * (255 - ((hsv.s * (65535 - remainder)) >> 16))) >> 8;
+  switch (region) {
+    case 0: rgb.r = hsv.v; rgb.g = (uint8_t)t; rgb.b = (uint8_t)p; break;
+    case 1: rgb.r = (uint8_t)q; rgb.g = hsv.v; rgb.b = (uint8_t)p; break;
+    case 2: rgb.r = (uint8_t)p; rgb.g = hsv.v; rgb.b = (uint8_t)t; break;
+    case 3: rgb.r = (uint8_t)p; rgb.g = (uint8_t)q; rgb.b = hsv.v; break;
+    case 4: rgb.r = (uint8_t)t; rgb.g = (uint8_t)p; rgb.b = hsv.v; break;
+    default: rgb.r = hsv.v; rgb.g = (uint8_t)p; rgb.b = (uint8_t)q; break;
+  }
+  rgb.w = 0;
+}
+
+void hsv2rgb_spectrum(const CHSV& hsv, CRGB& rgb) {
+  CHSV32 hsv32(hsv);
+  CRGBW rgb32;
+  hsv2rgb_spectrum(hsv32, rgb32);
+  rgb.r = rgb32.r; rgb.g = rgb32.g; rgb.b = rgb32.b;
+}
+
+void rgb2hsv(const CRGBW& rgb, CHSV32& hsv) {
+  int32_t r = rgb.r, g = rgb.g, b = rgb.b;
+  uint32_t maxval = (r > g) ? ((r > b) ? r : b) : ((g > b) ? g : b);
+  if (maxval == 0) { hsv.h = 0; hsv.s = 0; hsv.v = 0; return; }
+  uint32_t minval = (r < g) ? ((r < b) ? r : b) : ((g < b) ? g : b);
+  hsv.v = (uint8_t)maxval;
+  int32_t delta = maxval - minval;
+  if (delta != 0) {
+    hsv.s = (uint8_t)((255 * delta) / maxval);
+    int32_t h;
+    if (maxval == (uint32_t)r)      h = (10923 * (g - b)) / delta;
+    else if (maxval == (uint32_t)g) h = (10923 * (b - r)) / delta + 21845;
+    else                            h = (10923 * (r - g)) / delta + 43690;
+    if (h < 0) h += 65536;
+    hsv.h = (uint16_t)h;
+  } else {
+    hsv.s = 0;
+    hsv.h = 0;
+  }
+}
+

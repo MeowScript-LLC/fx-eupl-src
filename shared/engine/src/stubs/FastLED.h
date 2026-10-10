@@ -7,7 +7,7 @@
  * Copyright (c) 2013 FastLED, MIT License (see NOTICE).
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-04-19.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-05-08.
  */
 
 #pragma once
@@ -25,13 +25,19 @@ struct CHSV {
   CHSV(uint8_t h, uint8_t s, uint8_t v) : h(h), s(s), v(v) {}
 };
 
+struct CRGBW;
 struct CHSV32 {
   uint16_t h; uint8_t s, v;
   CHSV32() : h(0), s(0), v(0) {}
   CHSV32(uint16_t h, uint8_t s, uint8_t v) : h(h), s(s), v(v) {}
+  CHSV32(uint8_t h_, uint8_t s_, uint8_t v_) : h((uint16_t)h_ << 8), s(s_), v(v_) {}
+  CHSV32(const CHSV& c) : h((uint16_t)c.h << 8), s(c.s), v(c.v) {}
+  CHSV32(const CRGBW& rgb);
+  CHSV32& operator=(const CRGBW& rgb);
+  operator CHSV() const { return CHSV((uint8_t)(h >> 8), s, v); }
 };
 
-typedef uint32_t TProgmemRGBGradientPalette_byte;
+typedef uint8_t TProgmemRGBGradientPalette_byte;
 typedef const TProgmemRGBGradientPalette_byte* TProgmemRGBGradientPalettePtr;
 
 struct CRGB;
@@ -125,7 +131,35 @@ struct CRGBPalette16 {
     for (int i = 12; i < 16; i++) entries[i] = c4;
   }
   CRGBPalette16(const CRGB c[16]) { for (int i = 0; i < 16; i++) entries[i] = c[i]; }
-  CRGBPalette16(const TProgmemRGBGradientPalettePtr p) {  }
+  CRGBPalette16(const TProgmemRGBGradientPalettePtr p) { loadDynamicGradientPalette((const uint8_t*)p); }
+
+  void loadDynamicGradientPalette(const uint8_t* gp_data) {
+    if (!gp_data) return;
+    int stops = 0;
+    for (int i = 0; i < 64; i++) {
+      if (gp_data[i*4] == 255) { stops = i + 1; break; }
+    }
+    if (stops < 2) return;
+    for (int i = 0; i < 16; i++) {
+      int target = (i * 255) / 15;
+      int lo = 0;
+      for (int j = 0; j + 1 < stops; j++) {
+        if (gp_data[j*4] <= target && gp_data[(j+1)*4] >= target) { lo = j; break; }
+      }
+      int hi = lo + 1;
+      if (hi >= stops) hi = stops - 1;
+      int p_lo = gp_data[lo*4];
+      int p_hi = gp_data[hi*4];
+      int span = p_hi - p_lo;
+      int frac = (span > 0) ? ((target - p_lo) * 255 / span) : 0;
+      int r0 = gp_data[lo*4 + 1], g0 = gp_data[lo*4 + 2], b0 = gp_data[lo*4 + 3];
+      int r1 = gp_data[hi*4 + 1], g1 = gp_data[hi*4 + 2], b1 = gp_data[hi*4 + 3];
+      int r = r0 + ((r1 - r0) * frac) / 255;
+      int g = g0 + ((g1 - g0) * frac) / 255;
+      int b = b0 + ((b1 - b0) * frac) / 255;
+      entries[i] = CRGB((uint8_t)r, (uint8_t)g, (uint8_t)b);
+    }
+  }
   CRGBPalette16(CRGB c0, CRGB c1, CRGB c2, CRGB c3,
                 CRGB c4, CRGB c5, CRGB c6, CRGB c7,
                 CRGB c8, CRGB c9, CRGB cA, CRGB cB,
@@ -151,6 +185,17 @@ struct CRGBPalette16 {
 };
 
 void hsv2rgb_rainbow(const CHSV& hsv, CRGB& rgb);
+void hsv2rgb_spectrum(const CHSV32& hsv, CRGBW& rgb);
+void hsv2rgb_spectrum(const CHSV& hsv, CRGB& rgb);
+void rgb2hsv(const CRGBW& rgb, CHSV32& hsv);
+
+inline CHSV32::CHSV32(const CRGBW& rgb) {
+  rgb2hsv(rgb, *this);
+}
+inline CHSV32& CHSV32::operator=(const CRGBW& rgb) {
+  rgb2hsv(rgb, *this);
+  return *this;
+}
 
 CRGB ColorFromPalette(const CRGBPalette16& pal, uint8_t index, uint8_t brightness = 255, TBlendType blendType = LINEARBLEND);
 CRGBPalette16 CRGBPalette16_from_progmem(const TProgmemRGBGradientPalettePtr ptr);

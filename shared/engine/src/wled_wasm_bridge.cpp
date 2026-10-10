@@ -54,8 +54,7 @@ void wled_init(int width, int height) {
     seg.colors[0] = RGBW32(255, 160, 0, 0);
     seg.colors[1] = RGBW32(0, 0, 0, 0);
     seg.colors[2] = RGBW32(0, 0, 0, 0);
-    seg.options = 0;
-    seg.setOption(0, true);
+    seg.options = (1 << 0);
 
     _wasm_millis = 0;
 }
@@ -82,6 +81,14 @@ void wled_set_custom(int c1, int c2, int c3, bool ch1, bool ch2, bool ch3) {
     seg.check1 = ch1;
     seg.check2 = ch2;
     seg.check3 = ch3;
+}
+
+EMSCRIPTEN_KEEPALIVE
+void wled_set_options(int o1, int o2, int o3) {
+    Segment& seg = strip.getFirstSelectedSeg();
+    seg.check1 = (o1 != 0);
+    seg.check2 = (o2 != 0);
+    seg.check3 = (o3 != 0);
 }
 
 EMSCRIPTEN_KEEPALIVE
@@ -118,6 +125,36 @@ int wled_get_pixel_count() {
 EMSCRIPTEN_KEEPALIVE
 int wled_get_mode_count() {
     return strip.getModeCount();
+}
+
+static uint8_t _palette_dump[48];
+EMSCRIPTEN_KEEPALIVE
+uint8_t* wled_dump_palette() {
+    const CRGBPalette16& pal = Segment::getCurrentPalette();
+    for (int i = 0; i < 16; i++) {
+        _palette_dump[i*3 + 0] = pal.entries[i].r;
+        _palette_dump[i*3 + 1] = pal.entries[i].g;
+        _palette_dump[i*3 + 2] = pal.entries[i].b;
+    }
+    return _palette_dump;
+}
+
+EMSCRIPTEN_KEEPALIVE
+int wled_get_seg_palette() {
+    return (int)strip.getFirstSelectedSeg().palette;
+}
+
+extern void _wled_set_external_audio(float volumeSmth, float volumeRaw, uint8_t samplePeak,
+                                     float majorPeak, float magnitude, uint8_t maxVol,
+                                     uint8_t binNum, const uint8_t* fftResult16);
+
+EMSCRIPTEN_KEEPALIVE
+void wled_set_audio(float volumeSmth, float volumeRaw, int samplePeak,
+                    float majorPeak, float magnitude, int maxVol, int binNum,
+                    uint8_t* fftResultPtr) {
+    _wled_set_external_audio(volumeSmth, volumeRaw, (uint8_t)samplePeak,
+                             majorPeak, magnitude, (uint8_t)maxVol,
+                             (uint8_t)binNum, fftResultPtr);
 }
 
 }

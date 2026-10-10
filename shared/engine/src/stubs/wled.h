@@ -9,7 +9,7 @@
  * Copyright (c) 2013 FastLED, MIT License (see NOTICE).
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-04-19.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-05-08.
  */
 
 #pragma once
@@ -25,6 +25,7 @@
 typedef uint8_t byte;
 typedef uint8_t fract8;
 typedef std::string String;
+typedef unsigned int uint;
 
 using std::min;
 using std::max;
@@ -58,9 +59,6 @@ using std::max;
 inline long map(long x, long in_min, long in_max, long out_min, long out_max) {
   return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
-
-#define WLED_DISABLE_PARTICLESYSTEM2D
-#define WLED_DISABLE_PARTICLESYSTEM1D
 
 #define DEFAULT_LED_COUNT 30
 #define MAX_LEDS 8192
@@ -122,9 +120,10 @@ inline void  p_free(void* p) { free(p); }
 #define DEBUGFX_PRINTLN(x)
 #define DEBUGFX_PRINTF(...)
 
-#define ERR_NONE 0
-#define ERR_NORAM 2
-#define ERR_NORAM_PX 3
+#define ERR_NONE         0
+#define ERR_NOT_IMPL     4
+#define ERR_NORAM_PX     7
+#define ERR_NORAM        8
 extern uint8_t errorFlag;
 
 #define REALTIME_MODE_INACTIVE 0
@@ -184,10 +183,10 @@ struct UsermodManager {
 
 extern std::vector<void*> customPalettes;
 
-#define GRADIENT_PALETTE_COUNT 59
+#define DYNAMIC_PALETTE_COUNT 6
 #define FASTLED_PALETTE_COUNT 7
-#define FIXED_PALETTE_COUNT 12
-#define DYNAMIC_PALETTE_COUNT (GRADIENT_PALETTE_COUNT + FASTLED_PALETTE_COUNT)
+#define GRADIENT_PALETTE_COUNT 61
+#define FIXED_PALETTE_COUNT (DYNAMIC_PALETTE_COUNT + FASTLED_PALETTE_COUNT + GRADIENT_PALETTE_COUNT)
 
 #define SEG_OPTION_ON 0
 
@@ -225,7 +224,7 @@ inline float mapf(float x, float in_min, float in_max, float out_min, float out_
 inline uint8_t add8(uint8_t a, uint8_t b) { return qadd8(a, b); }
 
 extern const CRGBPalette16 fastledPalettes[];
-extern const TProgmemRGBGradientPalettePtr gGradientPalettes[];
+extern const uint8_t* const gGradientPalettes[];
 extern uint32_t randomPaletteChangeTime;
 extern bool useHarmonicRandomPalette;
 CRGBPalette16 generateRandomPalette(CRGBPalette16& pal);
@@ -243,6 +242,7 @@ uint8_t get_random_wheel_index(uint8_t pos);
 uint32_t hashInt(uint32_t s);
 
 #include "FX.h"
+#include "fcn_declare.h"
 
 extern WS2812FX strip;
 
