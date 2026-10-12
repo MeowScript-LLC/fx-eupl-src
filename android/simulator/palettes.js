@@ -221,7 +221,19 @@ class PaletteManager {
 
     switch (id) {
       case 0: {
-        return this.getPalette(6, colors);
+        for (let i = 0; i < 16; i++) {
+          let t = i / 15;
+          let r, g, b;
+          if (t < 0.5) {
+            const s = t * 2;
+            r = r2 + (r1 - r2) * s; g = g2 + (g1 - g2) * s; b = b2 + (b1 - b2) * s;
+          } else {
+            const s = (t - 0.5) * 2;
+            r = r1 + (r0 - r1) * s; g = g1 + (g0 - g1) * s; b = b1 + (b0 - b1) * s;
+          }
+          pal.entries[i] = [Math.round(r), Math.round(g), Math.round(b)];
+        }
+        return pal;
       }
       case 1: {
         const now = M.getNow();
@@ -240,20 +252,24 @@ class PaletteManager {
         return pal;
       case 3:
         for (let i = 0; i < 16; i++) {
+          const t = i / 15;
+          pal.entries[i] = [Math.round(r0+(r1-r0)*t), Math.round(g0+(g1-g0)*t), Math.round(b0+(b1-b0)*t)];
+        }
+        return pal;
+      case 4:
+        for (let i = 0; i < 16; i++) {
+          let t = i / 15;
           let r, g, b;
-          if (i <= 5) { r = r0; g = g0; b = b0; }
-          else if (i <= 10) {
-            const s = (i - 5) / 5;
-            r = r0 + (r1-r0)*s; g = g0 + (g1-g0)*s; b = b0 + (b1-b0)*s;
-          } else { r = r1; g = g1; b = b1; }
+          if (t < 0.5) {
+            const s = t * 2;
+            r = r2 + (r1-r2)*s; g = g2 + (g1-g2)*s; b = b2 + (b1-b2)*s;
+          } else {
+            const s = (t - 0.5) * 2;
+            r = r1 + (r0-r1)*s; g = g1 + (g0-g1)*s; b = b1 + (b0-b1)*s;
+          }
           pal.entries[i] = [Math.round(r), Math.round(g), Math.round(b)];
         }
         return pal;
-      case 4: {
-        const seq = [c2,c2,c1,c1,c1,c0,c0,c0,c2,c2,c1,c1,c0,c0,c2,c2];
-        for (let i = 0; i < 16; i++) pal.entries[i] = rgb(seq[i]);
-        return pal;
-      }
       case 5:
         for (let i = 0; i < 16; i++) {
           if (c2 !== 0) {

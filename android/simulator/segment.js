@@ -654,7 +654,6 @@ class Segment {
       const color = this.colors[mcol] || 0;
       return M.color_fade(color, pbri, true);
     }
-    const effPal = this._effectivePalette();
 
     if (mapping) {
       const vLen = this.vLength();
@@ -663,18 +662,9 @@ class Segment {
 
     const blendType = (mapping && !wrap) ? 2 : 1;
     if (typeof window !== 'undefined' && window.WLEDPalettes) {
-      return window.WLEDPalettes.colorFromPalette(effPal, index, pbri, this.colors, blendType);
+      return window.WLEDPalettes.colorFromPalette(this.palette, index, pbri, this.colors, blendType);
     }
     return M.color_wheel(index);
-  }
-
-  _effectivePalette() {
-    if (this.palette !== 0) return this.palette;
-    if (typeof EFFECTS !== 'undefined' && EFFECTS[this.mode] && EFFECTS[this.mode].defaults) {
-      const p = EFFECTS[this.mode].defaults.pal;
-      if (p !== undefined && p > 0) return p;
-    }
-    return 6;
   }
 
   color_wheel(pos) {
@@ -685,7 +675,7 @@ class Segment {
 
   ColorFromPalette(index, pbri = 255, blendType = 1) {
     if (typeof window !== 'undefined' && window.WLEDPalettes) {
-      return window.WLEDPalettes.colorFromPalette(this._effectivePalette(), index, pbri, this.colors, blendType);
+      return window.WLEDPalettes.colorFromPalette(this.palette, index, pbri, this.colors, blendType);
     }
     const M = (typeof WLEDMath !== 'undefined') ? WLEDMath : window.WLEDMath;
     return M.color_wheel(index);
