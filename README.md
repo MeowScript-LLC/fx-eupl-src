@@ -30,7 +30,7 @@ place so existing links keep working, but where an `-r2` tag exists, use the `-r
 | Android 1.1.2 | version codes 13 and 14 | `android-1.1.2-r2` | `shared/simulator/` (effects-1d, effects-2d, effects-meta, effects-ps, math), `android/simulator/` (palettes, segment), `android/kotlin/` (16 files) |
 | Android 1.1.4 | version code 15 | `android-1.1.4` | same file set as Android 1.1.2 except `shared/simulator/effects-ps.js`, which 1.1.4 no longer contains; several files changed |
 
-There was no iOS 1.0.0, Android 1.1.0 or Android 1.1.1 release.
+There was no iOS 1.0.0, Android 1.1.0, Android 1.1.1 or Android 1.1.3 release.
 
 Corrections to older tags:
 
