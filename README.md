@@ -22,6 +22,10 @@ place so existing links keep working, but where an `-r2` tag exists, use the `-r
 | iOS 1.1.2 | build 56 | `ios-1.1.2-r2` | same file set as iOS 1.1.1; `ios/simulator/palettes.js`, `ios/simulator/segment.js` and `ios/swift/PaletteColorData.swift` changed |
 | iOS 1.1.3 | build 57 | `ios-1.1.3-r2` | identical to iOS 1.1.2 |
 | iOS 1.1.4 | build 58 | `ios-1.1.4` | same file set as iOS 1.1.3 except `shared/simulator/effects-ps.js`, which 1.1.4 no longer contains; several files changed |
+| iOS 1.1.5 | build 59 | `ios-1.1.5` | identical to iOS 1.1.4 |
+| iOS 1.1.6 | build 60 | `ios-1.1.6` | identical to iOS 1.1.4 |
+| iOS 1.1.7 | build 61 | `ios-1.1.7` | identical to iOS 1.1.4 |
+| iOS 1.1.8 | build 62 | `ios-1.1.8` | identical to iOS 1.1.4 |
 | Android 1.0.5 | version code 5 | `android-1.0.5` | `android/kotlin/PaletteColorData.kt` (palette data only) |
 | Android 1.0.6 | version code 6 | `android-1.0.6` | same as Android 1.0.5 |
 | Android 1.0.7 | version code 8 | `android-1.0.7-r2` | same as Android 1.0.5 |
@@ -29,6 +33,10 @@ place so existing links keep working, but where an `-r2` tag exists, use the `-r
 | Android 1.0.9 | version code 10 | `android-1.0.9-r2` | same as Android 1.0.5 |
 | Android 1.1.2 | version codes 13 and 14 | `android-1.1.2-r2` | `shared/simulator/` (effects-1d, effects-2d, effects-meta, effects-ps, math), `android/simulator/` (palettes, segment), `android/kotlin/` (16 files) |
 | Android 1.1.4 | version code 15 | `android-1.1.4` | same file set as Android 1.1.2 except `shared/simulator/effects-ps.js`, which 1.1.4 no longer contains; several files changed |
+| Android 1.1.5 | version codes 16 and 17 | `android-1.1.5` | identical to Android 1.1.4 |
+| Android 1.1.6 | version code 18 | `android-1.1.6` | identical to Android 1.1.4 |
+| Android 1.1.7 | version code 19 | `android-1.1.7` | identical to Android 1.1.4 |
+| Android 1.1.8 | version code 20 | `android-1.1.8` | identical to Android 1.1.4 |
 
 There was no iOS 1.0.0, Android 1.1.0, Android 1.1.1 or Android 1.1.3 release.
 
