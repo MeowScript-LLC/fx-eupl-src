@@ -7,7 +7,7 @@
  * from FastLED (MIT License) and from the cpt-city collection (see NOTICE).
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-10-09.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-11-01.
  */
 
 'use strict';
@@ -189,6 +189,8 @@ class CRGBPalette16 {
 class PaletteManager {
   constructor() {
     this._cache = {};
+    // Custom palettes on the light (Snap Palette, palette files): id -> stops.
+    this._custom = {};
     this._randomPalette = null;
     this._randomPaletteTime = 0;
   }
@@ -196,6 +198,12 @@ class PaletteManager {
   getPalette(paletteId, segColors = [0xFFAA00, 0, 0]) {
     if (paletteId <= 5) return this._buildDynamicPalette(paletteId, segColors);
     if (this._cache[paletteId]) return this._cache[paletteId];
+
+    if (this._custom[paletteId]) {
+      const pal = CRGBPalette16.fromGradientStops(this._custom[paletteId]);
+      this._cache[paletteId] = pal;
+      return pal;
+    }
 
     if (FASTLED_PALETTES[paletteId]) {
       const pal = CRGBPalette16.fromEntries(FASTLED_PALETTES[paletteId].entries);
@@ -302,12 +310,22 @@ class PaletteManager {
   }
 
   clearCache() { this._cache = {}; }
+
+  /// The light's custom palettes as {id: [[pos,r,g,b],...]} (replaces the set).
+  setCustomPalettes(map) {
+    for (const id of Object.keys(this._custom)) delete this._cache[id];
+    this._custom = {};
+    for (const [id, stops] of Object.entries(map || {})) {
+      if (Array.isArray(stops) && stops.length) { this._custom[id] = stops; delete this._cache[id]; }
+    }
+  }
 }
 
 const paletteManager = new PaletteManager();
 
 if (typeof window !== 'undefined') {
   window.WLEDPalettes = paletteManager;
+  window.setCustomPalettes = (map) => paletteManager.setCustomPalettes(map);
   window.CRGBPalette16 = CRGBPalette16;
   window.GRADIENT_PALETTE_DEFS = GRADIENT_PALETTE_DEFS;
   window.FASTLED_PALETTES = FASTLED_PALETTES;
