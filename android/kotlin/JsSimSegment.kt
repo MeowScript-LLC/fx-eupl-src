@@ -8,7 +8,7 @@
  * FX_2Dfcn.cpp: Copyright (c) 2022 Blaz Kristan. Licensed under the EUPL v. 1.2 or later.
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-10-09.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-11-01.
  */
 
 package fx
@@ -495,6 +495,8 @@ internal class JsSimSegment(length1D: Int, val width2D: Int, val height2D: Int, 
         private val tableCache = arrayOfNulls<IntArray>(NativeEffectPalettes.LAST_ID + 1)
 
         fun jsTablePalette(id: Int): IntArray {
+            // A custom (Snap Palette) palette the app has read: its real colours.
+            com.meowscript.wledmax.data.model.CustomPaletteRegistry.table(id)?.let { return it }
             val pid = if (NativeEffectPalettes.offsetOf(id) >= 0) id else 11
             tableCache[pid]?.let { return it }
             val off = NativeEffectPalettes.offsetOf(pid)

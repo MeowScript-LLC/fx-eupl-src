@@ -7,7 +7,7 @@
  * Adapted from code originally licensed under the MIT license.
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-10-09.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-11-02.
  */
 
 package fx
@@ -63,6 +63,9 @@ internal object JsSimEffects {
 internal class JsSimRenderer(val length1D: Int, val width: Int, val height: Int, val is2D: Boolean) {
     val seg = JsSimSegment(if (is2D) width * height else length1D, width, height, is2D)
     private var currentEffect = -1
+
+    /** The next frame starts the effect over (fresh state), as the firmware does after an fx change. */
+    fun restart() { currentEffect = -1 }
 
     fun render(
         effectId: Int, paletteId: Int, effectDefaultPalette: Int,

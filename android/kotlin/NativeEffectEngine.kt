@@ -10,7 +10,7 @@
  * Copyright (c) 2013 FastLED, MIT License (see NOTICE).
  *
  * Modifications Copyright (c) 2026 MeowScript LLC, licensed under EUPL-1.2.
- * Modified by MeowScript LLC in 2026, last modified on 2026-10-09.
+ * Modified by MeowScript LLC in 2026, last modified on 2026-11-02.
  */
 
 package fx
@@ -465,6 +465,12 @@ object NativeEffectEngine {
     private val jsPaletteCache = arrayOfNulls<IntArray>(NativeEffectPalettes.LAST_ID + 1)
 
     private fun jsPalette(id: Int): IntArray {
+        // A custom (Snap Palette) palette the app has read: its real colours.
+        com.meowscript.wledmax.data.model.CustomPaletteRegistry.table(id)?.let { t ->
+            return IntArray(48).also { out ->
+                for (i in 0 until 16) { val c = t[i]; out[i * 3] = (c shr 16) and 0xFF; out[i * 3 + 1] = (c shr 8) and 0xFF; out[i * 3 + 2] = c and 0xFF }
+            }
+        }
         val pid = if (NativeEffectPalettes.offsetOf(id) >= 0) id else 11
         jsPaletteCache[pid]?.let { return it }
         val off = NativeEffectPalettes.offsetOf(pid)
